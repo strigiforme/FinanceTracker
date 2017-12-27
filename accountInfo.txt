@@ -1,0 +1,4 @@
+~name:howard
+~chequing:295.0
+~savings:400.0
+~credit:20.0
