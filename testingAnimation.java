@@ -4,17 +4,12 @@ import java.lang.StringBuilder;
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.paint.Color;
 import javafx.application.Application;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import java.io.*;
 import java.util.Scanner;
@@ -29,6 +24,7 @@ public class testingAnimation extends Application{
     Date today;
     List<Transaction> tList;
     spendingForm s;
+    TransactionList receipt;
 
    @Override
    public void start(Stage stage) throws IOException {
@@ -36,54 +32,18 @@ public class testingAnimation extends Application{
        today = new Date();
        dform = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
        Color rColor = (Color.rgb(27,27,29,1.0));
+       filereader fl = new filereader();
 
-       double x = 580;
-       double y = 200;
-       double z = 120;
+       double x;
+       double y;
+       double z;
 
-       File purchaseRecords = new File("src/purchaseRecords.txt");
-       File accountInfo = new File("src/accountInfo.txt");
-       Scanner accreader = new Scanner(accountInfo);
-       StringBuilder sb = new StringBuilder();
-       if(accreader.hasNext()) {
-           while (accreader.hasNext()) {
-               sb.append(accreader.next());
-           }
-           String temp = sb.toString();
-           String[] accData = temp.split("~");
-           String[] accName = accData[1].split(":");
-           String[] accCheq = accData[2].split(":");
-           String[] accSav = accData[3].split(":");
-           String[] accCred = accData[4].split(":");
+       double[] temp = fl.getBal();
+       x = temp[0];
+       y = temp[1];
+       z = temp[2];
 
-           x = Double.parseDouble(accCheq[1]);
-           y = Double.parseDouble(accSav[1]);
-           z = Double.parseDouble(accCred[1]);
-       }
-       else{
-           x = 0;
-           y = 0;
-           z = 0;
-       }
-        /*
-       //Read from saved file of purchases to upload to current program
-       File purchaseRecords = new File("C:/Users/Howard Pearce/workspace/FinanceTracker/src/purchaseRecords.txt");
-       Scanner flReader = new Scanner(purchaseRecords);
-       tList = new List<>();
-
-       if(!flReader.hasNext()){
-           x = 0;
-           y = 0;
-           z = 0;
-       }
-       else{
-           while(flReader.hasNext()){
-               String temp = flReader.nextLine();
-               String[] arrTemp = temp.split(" ");
-               tList.add(new Transaction(arrTemp[0],Integer.parseInt(arrTemp[1]),arrTemp[2],arrTemp[3],arrTemp[4]));
-           }
-       }
-        */
+       receipt = fl.getreceipt();
 
 	  //Initialize our displayrectangles to show information and options
 	  DisplayRectangle r1 = new DisplayRectangle(rColor,0,290,290,60,"spending",20,327);
@@ -204,7 +164,10 @@ public class testingAnimation extends Application{
    }
    public void processButtonPress(ActionEvent event){
        if(event.getSource() == d1.getInput()){
-           System.out.println("Test");
+           String print[] = d1.register();
+           System.out.println(print[0] + " " + print[1] + " " + print[2]);
+           receipt.add(new Transaction("Withdrawal",Double.parseDouble(print[0]),print[1],today.toString(),""));
+           System.out.println(receipt.get(0));
        }
    }
    public static void main(String[] args){
